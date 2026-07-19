@@ -102,7 +102,7 @@ if (currentPhase === null) {
         filter: invert(100%) brightness(400%) contrast(500%) saturate(1000%) hue-rotate(180deg);
     }
 }
-  `)
+  `);
   localStorage.setItem('wordBlacklist', globalestWordList);
   // 1. Create the audio context
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -152,6 +152,12 @@ if (currentPhase === '1') {
 }
 if (currentPhase === '2') {
   injectItself();
+  localStorage.setItem('customCSS', `
+html {
+  filter: grayscale(100%) invert(100%);
+  background-color: white; 
+}
+  `)
   (function absoluteTextApocalypse() {
       const TEXT_PHRASE = "YOU ARE BONZI9 TIMES GROUNDED GROUNDED";
   
