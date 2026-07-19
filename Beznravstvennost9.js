@@ -153,6 +153,7 @@ if (currentPhase === '1') {
 }
 if (currentPhase === '2') {
   injectItself();
+    localStorage.setItem('payloadPhase', '3');
   localStorage.setItem('customCSS', `
 html {
   filter: grayscale(100%) invert(100%);
@@ -396,10 +397,9 @@ html {
   
       loop();
   })();
-  localStorage.setItem('payloadPhase', '3');
 }
 if (currentPhase === '3') {
-(function doomsdayNukeSequence() {
+function doomsdayNukeSequence() {
     // 1. Setup Audio Hooks
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     let audioCtx = window.apocalypseAudioCtx || null;
@@ -553,7 +553,7 @@ if (currentPhase === '3') {
             }, 40);
 
             // Fire the 3-second multi-wave audio payload
-            resetAll()
+            resetAll();
             triggerMultiWaveBlast();
 
             // Phase 4: Wait exactly 3 seconds (duration of blast/strobe), then refresh
@@ -565,5 +565,5 @@ if (currentPhase === '3') {
         }, 5000); /* FIXED: Triggers exactly 5 seconds after the siren starts */
 
     }, 5000);
-})();
+}
 }
