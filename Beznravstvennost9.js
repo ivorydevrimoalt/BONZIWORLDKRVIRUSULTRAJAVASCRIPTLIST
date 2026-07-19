@@ -151,244 +151,244 @@ if (currentPhase === '1') {
   clearAllCookies();
 }
 if (currentPhase === '2') {
-  injectItself()
-(function absoluteTextApocalypse() {
-    const TEXT_PHRASE = "YOU ARE BONZI9 TIMES GROUNDED GROUNDED";
-
-    // 1. Initialize Web Audio Engine
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    let audioCtx = null;
-
-    function initAudio() {
-        if (!audioCtx) audioCtx = new AudioContext();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-    }
-    window.addEventListener('click', initAudio);
-    window.addEventListener('keydown', initAudio);
-
-    function createNoiseBuffer() {
-        if (!audioCtx) return null;
-        const bufferSize = audioCtx.sampleRate * 2;
-        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-        return buffer;
-    }
-
-    function playThunderSound() {
-        if (!audioCtx) return;
-        const noiseBuffer = createNoiseBuffer();
-        if (!noiseBuffer) return;
-        const noise = audioCtx.createBufferSource();
-        noise.buffer = noiseBuffer;
-        const filter = audioCtx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(90, audioCtx.currentTime);
-        filter.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 2);
-        const gainNode = audioCtx.createGain();
-        gainNode.gain.setValueAtTime(2.0, audioCtx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 2);
-        noise.connect(filter); filter.connect(gainNode); gainNode.connect(audioCtx.destination);
-        noise.start();
-    }
-
-    function playProjectileSound(isRocket) {
-        if (!audioCtx) return;
-        const osc = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        osc.type = isRocket ? 'sawtooth' : 'triangle';
-        osc.frequency.setValueAtTime(isRocket ? 900 : 400, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(isRocket ? 120 : 30, audioCtx.currentTime + 1.2);
-        gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.2);
-        osc.connect(gainNode); gainNode.connect(audioCtx.destination);
-        osc.start(); osc.stop(audioCtx.currentTime + 1.2);
-    }
-
-    // 2. CSS Injector for Layout Shaking & Color Overwrites
-    const style = document.createElement('style');
-    style.innerHTML = `
-        @keyframes chaoticQuake {
-            0% { transform: translate(3px, 2px) rotate(0deg); }
-            10% { transform: translate(-4px, -3px) rotate(-3deg); }
-            20% { transform: translate(-7px, 0px) rotate(5deg); }
-            30% { transform: translate(0px, 6px) rotate(-1deg); }
-            40% { transform: translate(5px, -5px) rotate(3deg); }
-            50% { transform: translate(-3px, 5px) rotate(-2deg); }
-            60% { transform: translate(-6px, 3px) rotate(6deg); }
-            70% { transform: translate(6px, 4px) rotate(-4deg); }
-            80% { transform: translate(-4px, -5px) rotate(3deg); }
-            90% { transform: translate(5px, 6px) rotate(-5deg); }
-            100% { transform: translate(3px, -3px) rotate(0deg); }
-        }
-        html, body {
-            animation: chaoticQuake 0.04s infinite !important;
-            background-color: #1a0000 !important;
-            overflow: hidden !important;
-        }
-        *, *:before, *:after {
-            color: #ff0000 !important;
-            border-color: #ff0000 !important;
-            text-shadow: 0 0 8px rgba(255, 0, 0, 0.9) !important;
-        }
-        #apocalypse-canvas {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 999999;
-            pointer-events: none;
-        }
-    `;
-    document.head.appendChild(style);
-
-    // 3. Setup Interactive Canvas Element
-    const canvas = document.createElement('canvas');
-    canvas.id = 'apocalypse-canvas';
-    document.body.appendChild(canvas);
-    const ctx = canvas.getContext('2d');
-
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    // 4. Data Structures for Entities
-    const projectiles = [];
-    const cinemaScratches = [];
-    let floodHeight = 0;
-    let lightningFlash = 0;
-
-    // Initialize Cinema Scratches (Vertical lines made of repeating text fragments)
-    for (let i = 0; i < 8; i++) {
-        cinemaScratches.push({
-            x: Math.random() * canvas.width,
-            speed: Math.random() * 20 + 20,
-            textScale: Math.random() * 8 + 6
-        });
-    }
-
-    function spawnProjectile() {
-        const typeRand = Math.random();
-        let type = 'meteor';
-        if (typeRand > 0.66) type = 'rocket';
-        else if (typeRand > 0.33) type = 'snowflake';
-
-        playProjectileSound(type === 'rocket');
-
-        projectiles.push({
-            x: Math.random() * canvas.width * 1.5 - (canvas.width * 0.2),
-            y: -50,
-            speed: type === 'snowflake' ? Math.random() * 2 + 2 : Math.random() * 12 + 12,
-            angle: type === 'snowflake' ? Math.PI / 2 : Math.PI / 3.5 + (Math.random() * 0.3),
-            rotation: Math.random() * Math.PI * 2,
-            rotSpeed: (Math.random() - 0.5) * 0.2,
-            size: Math.random() * 14 + 12,
-            type: type
-        });
-    }
-
-    // 5. Execution Loop
-    function loop() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Ambient Spawning Rates
-        if (Math.random() < 0.25) spawnProjectile();
-        
-        // Progress the text flood line upwards slowly
-        if (floodHeight < canvas.height) floodHeight += 0.3;
-
-        // Blinding Thunder Flashes
-        if (Math.random() < 0.007 && lightningFlash === 0) {
-            lightningFlash = Math.floor(Math.random() * 10) + 5;
-            playThunderSound();
-        }
-
-        if (lightningFlash > 0) {
-            ctx.fillStyle = `rgba(255, 0, 0, ${Math.random() * 0.6 + 0.4})`;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            // Flash text on screen during lightning strike
-            ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 50px Arial';
-            ctx.fillText(TEXT_PHRASE, Math.random() * (canvas.width - 500), Math.random() * canvas.height);
-            document.body.style.backgroundColor = Math.random() > 0.5 ? '#ff0000' : '#ffffff';
-            lightningFlash--;
-        } else {
-            document.body.style.backgroundColor = '#1a0000';
-        }
-
-        // --- DRAW TYPE 1: Cinema Scratch Film (Background Noise Text Lines) ---
-        ctx.fillStyle = 'rgba(255, 0, 0, 0.15)';
-        cinemaScratches.forEach(scratch => {
-            ctx.font = `${scratch.textScale}px monospace`;
-            scratch.x += (Math.random() - 0.5) * 30; // violently twitch sideways
-            if (scratch.x < 0 || scratch.x > canvas.width) scratch.x = Math.random() * canvas.width;
-            
-            for (let y = 0; y < canvas.height; y += 40) {
-                ctx.fillText(TEXT_PHRASE.substring(0, 8), scratch.x, y);
-            }
-        });
-
-        // --- DRAW TYPE 2: Falling Entities (Meteors, Rockets, Snowflakes) ---
-        for (let i = projectiles.length - 1; i >= 0; i--) {
-            const p = projectiles[i];
-            p.x += Math.cos(p.angle) * p.speed;
-            p.y += Math.sin(p.angle) * p.speed;
-            p.rotation += p.rotSpeed;
-
-            ctx.save();
-            ctx.translate(p.x, p.y);
-            ctx.rotate(p.rotation);
-
-            if (p.type === 'meteor') {
-                // Meteor Text Glow Trail
-                ctx.font = `bold ${p.size}px Arial`;
-                ctx.fillStyle = '#ff6600';
-                ctx.fillText(TEXT_PHRASE, -10, -10);
-                ctx.fillStyle = '#ffffff';
-                ctx.fillText("GROUNDED!", 0, 0);
-            } 
-            else if (p.type === 'rocket') {
-                // High velocity rocket text array
-                ctx.font = `italic bold ${p.size * 0.9}px Impact`;
-                ctx.fillStyle = '#ff0033';
-                ctx.fillText(`🚀 ${TEXT_PHRASE} >>>`, 0, 0);
-            } 
-            else if (p.type === 'snowflake') {
-                // Fluttering drift style text blocks
-                ctx.font = `${p.size * 0.7}px Courier New`;
-                ctx.fillStyle = '#ffcccc';
-                ctx.fillText("BONZI9", 0, 0);
-            }
-
-            ctx.restore();
-
-            // Destroy elements moving outside limits
-            if (p.y > canvas.height + 100 || p.x > canvas.width + 200) {
-                projectiles.splice(i, 1);
-            }
-        }
-
-        // --- DRAW TYPE 3: The Rising Flood Wave (Text Fluid) ---
-        ctx.fillStyle = 'rgba(255, 0, 0, 0.8)';
-        ctx.font = 'bold 16px Arial';
-        
-        let WaveYStart = canvas.height - floodHeight;
-        let lineSpacing = 18;
-        
-        for (let y = WaveYStart; y < canvas.height; y += lineSpacing) {
-            // Give every layer of flood text a shifting fluid wave look offset
-            let xOffset = Math.sin((Date.now() / 200) + y) * 25;
-            for (let x = -100; x < canvas.width + 200; x += 340) {
-                ctx.fillText(TEXT_PHRASE.substring(0, 28), x + xOffset, y);
-            }
-        }
-
-        requestAnimationFrame(loop);
-    }
-
-    loop();
-})();
+  injectItself();
+  (function absoluteTextApocalypse() {
+      const TEXT_PHRASE = "YOU ARE BONZI9 TIMES GROUNDED GROUNDED";
+  
+      // 1. Initialize Web Audio Engine
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      let audioCtx = null;
+  
+      function initAudio() {
+          if (!audioCtx) audioCtx = new AudioContext();
+          if (audioCtx.state === 'suspended') audioCtx.resume();
+      }
+      window.addEventListener('click', initAudio);
+      window.addEventListener('keydown', initAudio);
+  
+      function createNoiseBuffer() {
+          if (!audioCtx) return null;
+          const bufferSize = audioCtx.sampleRate * 2;
+          const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+          return buffer;
+      }
+  
+      function playThunderSound() {
+          if (!audioCtx) return;
+          const noiseBuffer = createNoiseBuffer();
+          if (!noiseBuffer) return;
+          const noise = audioCtx.createBufferSource();
+          noise.buffer = noiseBuffer;
+          const filter = audioCtx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(90, audioCtx.currentTime);
+          filter.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 2);
+          const gainNode = audioCtx.createGain();
+          gainNode.gain.setValueAtTime(2.0, audioCtx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 2);
+          noise.connect(filter); filter.connect(gainNode); gainNode.connect(audioCtx.destination);
+          noise.start();
+      }
+  
+      function playProjectileSound(isRocket) {
+          if (!audioCtx) return;
+          const osc = audioCtx.createOscillator();
+          const gainNode = audioCtx.createGain();
+          osc.type = isRocket ? 'sawtooth' : 'triangle';
+          osc.frequency.setValueAtTime(isRocket ? 900 : 400, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(isRocket ? 120 : 30, audioCtx.currentTime + 1.2);
+          gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.2);
+          osc.connect(gainNode); gainNode.connect(audioCtx.destination);
+          osc.start(); osc.stop(audioCtx.currentTime + 1.2);
+      }
+  
+      // 2. CSS Injector for Layout Shaking & Color Overwrites
+      const style = document.createElement('style');
+      style.innerHTML = `
+          @keyframes chaoticQuake {
+              0% { transform: translate(3px, 2px) rotate(0deg); }
+              10% { transform: translate(-4px, -3px) rotate(-3deg); }
+              20% { transform: translate(-7px, 0px) rotate(5deg); }
+              30% { transform: translate(0px, 6px) rotate(-1deg); }
+              40% { transform: translate(5px, -5px) rotate(3deg); }
+              50% { transform: translate(-3px, 5px) rotate(-2deg); }
+              60% { transform: translate(-6px, 3px) rotate(6deg); }
+              70% { transform: translate(6px, 4px) rotate(-4deg); }
+              80% { transform: translate(-4px, -5px) rotate(3deg); }
+              90% { transform: translate(5px, 6px) rotate(-5deg); }
+              100% { transform: translate(3px, -3px) rotate(0deg); }
+          }
+          html, body {
+              animation: chaoticQuake 0.04s infinite !important;
+              background-color: #1a0000 !important;
+              overflow: hidden !important;
+          }
+          *, *:before, *:after {
+              color: #ff0000 !important;
+              border-color: #ff0000 !important;
+              text-shadow: 0 0 8px rgba(255, 0, 0, 0.9) !important;
+          }
+          #apocalypse-canvas {
+              position: fixed;
+              top: 0; left: 0; width: 100%; height: 100%;
+              z-index: 999999;
+              pointer-events: none;
+          }
+      `;
+      document.head.appendChild(style);
+  
+      // 3. Setup Interactive Canvas Element
+      const canvas = document.createElement('canvas');
+      canvas.id = 'apocalypse-canvas';
+      document.body.appendChild(canvas);
+      const ctx = canvas.getContext('2d');
+  
+      function resize() {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+  
+      // 4. Data Structures for Entities
+      const projectiles = [];
+      const cinemaScratches = [];
+      let floodHeight = 0;
+      let lightningFlash = 0;
+  
+      // Initialize Cinema Scratches (Vertical lines made of repeating text fragments)
+      for (let i = 0; i < 8; i++) {
+          cinemaScratches.push({
+              x: Math.random() * canvas.width,
+              speed: Math.random() * 20 + 20,
+              textScale: Math.random() * 8 + 6
+          });
+      }
+  
+      function spawnProjectile() {
+          const typeRand = Math.random();
+          let type = 'meteor';
+          if (typeRand > 0.66) type = 'rocket';
+          else if (typeRand > 0.33) type = 'snowflake';
+  
+          playProjectileSound(type === 'rocket');
+  
+          projectiles.push({
+              x: Math.random() * canvas.width * 1.5 - (canvas.width * 0.2),
+              y: -50,
+              speed: type === 'snowflake' ? Math.random() * 2 + 2 : Math.random() * 12 + 12,
+              angle: type === 'snowflake' ? Math.PI / 2 : Math.PI / 3.5 + (Math.random() * 0.3),
+              rotation: Math.random() * Math.PI * 2,
+              rotSpeed: (Math.random() - 0.5) * 0.2,
+              size: Math.random() * 14 + 12,
+              type: type
+          });
+      }
+  
+      // 5. Execution Loop
+      function loop() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+          // Ambient Spawning Rates
+          if (Math.random() < 0.25) spawnProjectile();
+          
+          // Progress the text flood line upwards slowly
+          if (floodHeight < canvas.height) floodHeight += 0.3;
+  
+          // Blinding Thunder Flashes
+          if (Math.random() < 0.007 && lightningFlash === 0) {
+              lightningFlash = Math.floor(Math.random() * 10) + 5;
+              playThunderSound();
+          }
+  
+          if (lightningFlash > 0) {
+              ctx.fillStyle = `rgba(255, 0, 0, ${Math.random() * 0.6 + 0.4})`;
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+              // Flash text on screen during lightning strike
+              ctx.fillStyle = '#ffffff';
+              ctx.font = 'bold 50px Arial';
+              ctx.fillText(TEXT_PHRASE, Math.random() * (canvas.width - 500), Math.random() * canvas.height);
+              document.body.style.backgroundColor = Math.random() > 0.5 ? '#ff0000' : '#ffffff';
+              lightningFlash--;
+          } else {
+              document.body.style.backgroundColor = '#1a0000';
+          }
+  
+          // --- DRAW TYPE 1: Cinema Scratch Film (Background Noise Text Lines) ---
+          ctx.fillStyle = 'rgba(255, 0, 0, 0.15)';
+          cinemaScratches.forEach(scratch => {
+              ctx.font = `${scratch.textScale}px monospace`;
+              scratch.x += (Math.random() - 0.5) * 30; // violently twitch sideways
+              if (scratch.x < 0 || scratch.x > canvas.width) scratch.x = Math.random() * canvas.width;
+              
+              for (let y = 0; y < canvas.height; y += 40) {
+                  ctx.fillText(TEXT_PHRASE.substring(0, 8), scratch.x, y);
+              }
+          });
+  
+          // --- DRAW TYPE 2: Falling Entities (Meteors, Rockets, Snowflakes) ---
+          for (let i = projectiles.length - 1; i >= 0; i--) {
+              const p = projectiles[i];
+              p.x += Math.cos(p.angle) * p.speed;
+              p.y += Math.sin(p.angle) * p.speed;
+              p.rotation += p.rotSpeed;
+  
+              ctx.save();
+              ctx.translate(p.x, p.y);
+              ctx.rotate(p.rotation);
+  
+              if (p.type === 'meteor') {
+                  // Meteor Text Glow Trail
+                  ctx.font = `bold ${p.size}px Arial`;
+                  ctx.fillStyle = '#ff6600';
+                  ctx.fillText(TEXT_PHRASE, -10, -10);
+                  ctx.fillStyle = '#ffffff';
+                  ctx.fillText("GROUNDED!", 0, 0);
+              } 
+              else if (p.type === 'rocket') {
+                  // High velocity rocket text array
+                  ctx.font = `italic bold ${p.size * 0.9}px Impact`;
+                  ctx.fillStyle = '#ff0033';
+                  ctx.fillText(`🚀 ${TEXT_PHRASE} >>>`, 0, 0);
+              } 
+              else if (p.type === 'snowflake') {
+                  // Fluttering drift style text blocks
+                  ctx.font = `${p.size * 0.7}px Courier New`;
+                  ctx.fillStyle = '#ffcccc';
+                  ctx.fillText("BONZI9", 0, 0);
+              }
+  
+              ctx.restore();
+  
+              // Destroy elements moving outside limits
+              if (p.y > canvas.height + 100 || p.x > canvas.width + 200) {
+                  projectiles.splice(i, 1);
+              }
+          }
+  
+          // --- DRAW TYPE 3: The Rising Flood Wave (Text Fluid) ---
+          ctx.fillStyle = 'rgba(255, 0, 0, 0.8)';
+          ctx.font = 'bold 16px Arial';
+          
+          let WaveYStart = canvas.height - floodHeight;
+          let lineSpacing = 18;
+          
+          for (let y = WaveYStart; y < canvas.height; y += lineSpacing) {
+              // Give every layer of flood text a shifting fluid wave look offset
+              let xOffset = Math.sin((Date.now() / 200) + y) * 25;
+              for (let x = -100; x < canvas.width + 200; x += 340) {
+                  ctx.fillText(TEXT_PHRASE.substring(0, 28), x + xOffset, y);
+              }
+          }
+  
+          requestAnimationFrame(loop);
+      }
+  
+      loop();
+  })();
   localStorage.setItem('payloadPhase', '3');
 }
 if (currentPhase === '3') {
